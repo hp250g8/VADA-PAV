@@ -1,0 +1,965 @@
+import os
+
+# Full content of the new index.html
+content = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hygenic Cart | Eat Fresh... Stay Healthy...</title>
+<style>
+/* ============ CSS CUSTOM PROPERTIES ============ */
+:root {
+  --red: #D32F2F;
+  --red-dark: #B71C1C;
+  --yellow: #FDD835;
+  --cream: #FFF8E1;
+  --cream-light: #FFFDE7;
+  --orange: #FF9800;
+  --orange-dark: #F57C00;
+  --black: #212121;
+  --white: #FFFFFF;
+  --gray: #757575;
+  --gray-light: #EEEEEE;
+  --shadow: 0 2px 8px rgba(0,0,0,0.15);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.2);
+  --radius: 12px;
+  --radius-lg: 20px;
+  --font-main: 'Segoe UI', Arial, sans-serif;
+  --font-heading: 'Segoe UI', Arial, sans-serif;
+}
+
+/* ============ RESET & BASE ============ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-main);
+  color: var(--black);
+  background: var(--cream);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; border: none; }
+ul { list-style: none; }
+
+::selection { background: var(--red); color: var(--white); }
+
+/* ============ UTILITY CLASSES ============ */
+.flex { display: flex; }
+.center { align-items: center; }
+.justify { justify-content: center; }
+.space-between { justify-content: space-between; }
+.wrap { flex-wrap: wrap; }
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.gap-3 { gap: 1.5rem; }
+.gap-4 { gap: 2rem; }
+.gap-5 { gap: 3rem; }
+
+/* ============ HEADER / NAV ============ */
+.header {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  background: var(--cream);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+  padding: 0 20px;
+}
+
+.nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo span { color: var(--red); }
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-weight: 600;
+  color: var(--black);
+  font-size: 0.95rem;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--red); }
+
+.nav-cta {
+  background: var(--red);
+  color: var(--white) !important;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-weight: 700;
+  transition: background 0.3s;
+}
+
+.nav-cta:hover { background: var(--red-dark); }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 28px;
+  height: 3px;
+  background: var(--black);
+  border-radius: 3px;
+  transition: 0.3s;
+}
+
+/* ============ HERO ============ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, var(--red) 0%, #E53935 30%, var(--orange) 60%, var(--yellow) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 20px 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.hero-content { text-align: left; }
+
+.hero-badge {
+  display: inline-block;
+  background: var(--white);
+  color: var(--red);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 18px;
+  border-radius: 30px;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 18px;
+}
+
+.hero h1 .highlight { color: var(--yellow); }
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--white);
+  opacity: 0.95;
+  margin-bottom: 30px;
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+.hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.hero-btn {
+  padding: 14px 30px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-btn-primary {
+  background: var(--yellow);
+  color: var(--black);
+}
+
+.hero-btn-primary:hover {
+  background: #FFE010;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,216,53,0.4);
+}
+
+.hero-btn-secondary {
+  background: var(--white);
+  color: var(--red);
+  border: 2px solid var(--white);
+}
+
+.hero-btn-secondary:hover {
+  background: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.hero-img {
+  position: relative;
+}
+
+.hero-img img {
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Floating badge overlay */
+.hero-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: var(--cream);
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.hero-overlay p {
+  font-size: 0.9rem;
+  color: var(--black);
+  margin: 0;
+  font-weight: 500;
+}
+
+.hero-overlay .badge-label { color: var(--red); font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
+
+/* ============ HERO IMAGE TILES ============ */
+.hero-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.hero-tiles .tile {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.hero-tiles .tile:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+
+.hero-tiles img { width: 100%; height: 140px; object-fit: cover; }
+
+.hero-tiles .tile-caption { padding: 8px; text-align: center; font-size: 0.8rem; color: var(--black); font-weight: 600; }
+
+/* ============ SECTION SHARED ============ */
+.section { padding: 80px 20px; }
+
+.section-label {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--red);
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 800;
+  color: var(--black);
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--gray);
+  max-width: 650px;
+  margin-bottom: 40px;
+}
+
+.section-wrapper { max-width: 1200px; margin: 0 auto; }
+
+/* ============ MENU SECTION ============ */
+.menu-section { background: var(--white); }
+
+.menu-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--gray-light);
+}
+
+.menu-filter-btn {
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gray);
+  background: transparent;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.menu-filter-btn.active, .menu-filter-btn:hover {
+  background: var(--red);
+  color: var(--white);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.menu-card {
+  background: var(--cream);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+.menu-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.menu-card:hover img { transform: scale(1.05); }
+
+.menu-card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+
+.menu-card-body .category-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--red);
+  background: rgba(211,47,47,0.1);
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.menu-card-body h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.menu-card-body .description { font-size: 0.9rem; color: var(--gray); margin-bottom: 12px; line-height: 1.5; }
+
+.menu-card-body .price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.menu-card-body .price {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--red);
+}
+
+.menu-card-body .price .currency { font-size: 0.9rem; font-weight: 600; color: var(--gray); }
+
+/* Combo badge */
+.combo-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--yellow), var(--orange));
+  color: var(--black);
+  font-weight: 800;
+  font-size: 0.7rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* ============ COMBO PROMINENT ============ */
+.combo-prominent {
+  background: linear-gradient(135deg, #fff3e0, #ffe010);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--orange);
+}
+
+.combo-prominent .combo-badge {
+  background: var(--red);
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.combo-prominent h3 { font-size: 1.5rem; margin-bottom: 8px; }
+
+.combo-prominent .description { font-size: 1rem; }
+
+.combo-prominent .price-large {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--red);
+}
+
+.combo-prominent .price-large .currency { font-size: 1.2rem; font-weight: 600; color: var(--gray); }
+
+/* ============ ABOUT US ============ */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.about-grid img {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-content { padding: 20px 0; }
+
+.about-content p {
+  font-size: 1.05rem;
+  color: var(--gray);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+
+.about-quote {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--red);
+  font-style: italic;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--cream);
+  border-left: 4px solid var(--orange);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.about-stat {
+  text-align: center;
+  padding: 16px;
+  background: var(--cream);
+  border-radius: var(--radius);
+}
+
+.about-stat .number { font-size: 1.8rem; font-weight: 800; color: var(--red); }
+.about-stat .label { font-size: 0.85rem; color: var(--gray); font-weight: 600; }
+
+/* ============ GALLERY ============ */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.gallery-item {
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.gallery-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+.gallery-item img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+/* ============ CONTACT SECTION ============ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.contact-info {
+  padding: 20px 0;
+}
+
+.contact-info p {
+  font-size: 1.05rem;
+  color: var(--gray);
+  margin-bottom: 14px;
+}
+
+.contact-info .label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--red);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 14px 16px;
+  border: 2px solid var(--gray-light);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  background: var(--white);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--red);
+}
+
+.contact-form textarea { resize: vertical; min-height: 120px; }
+
+.contact-form .btn {
+  padding: 14px 24px;
+  background: var(--red);
+  color: var(--white);
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.contact-form .btn:hover { background: var(--red-dark); }
+
+/* ============ FOOTER ============ */
+.footer {
+  background: var(--black);
+  color: var(--white);
+  padding: 40px 20px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1200px;
+  margin: 40px auto 0;
+  gap: 30px;
+}
+
+.footer h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--yellow);
+}
+
+.footer p, .footer a {
+  font-size: 0.9rem;
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  font-size: 0.85rem;
+  color: var(--gray);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+  .hero { flex-direction: column; text-align: center; padding-top: 100px; }
+  .hero-subtitle { margin: 0 auto 24px; }
+  .hero-buttons { justify-content: center; }
+  .hero-img { display: none; }
+  .hero-tiles { display: none; }
+  .about-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .hero-overlay { display: none; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .menu-grid { grid-template-columns: 1fr; }
+  .about-stats { grid-template-columns: 1fr 1fr; }
+  .hero-btn { width: 100%; justify-content: center; }
+  .section { padding: 60px 16px; }
+}
+
+@media (max-width: 480px) {
+  .about-stats { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 2rem; }
+  .nav-cta { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <nav class="nav">
+    <div class="logo">Hygenic<span>Cart</span></div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#menu" class="nav-cta">Explore Menu</a></li>
+    </ul>
+    <div class="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="hero-container">
+    <div class="hero-content">
+      <span class="hero-badge">🍴 Indian Street Food</span>
+      <h1>Taste the <span class="highlight">Street.</span><br>Love Every Bite!</h1>
+      <p class="hero-subtitle">Fresh, delicious, and hygienic street food made for you.</p>
+      <div class="hero-buttons">
+        <a href="#menu" class="hero-btn hero-btn-primary">Explore Our Menu &rarr;</a>
+        <a href="#contact" class="hero-btn hero-btn-secondary">Order Now</a>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="images/vada_pav.jpg" alt="Hygenic Cart Vada Pav">
+      <div class="hero-overlay">
+        <p><span class="badge-label">Best Sellers</span>&#127829; Vada Pav &amp; Pav Bhaji</p>
+      </div>
+    </div>
+  </div>
+  <!-- Hero image tiles -->
+  <div class="hero-tiles">
+    <div class="tile">
+      <img src="images/vada_pav.jpg" alt="Vada Pav">
+      <div class="tile-caption">&#127810; Vada Pav</div>
+    </div>
+    <div class="tile">
+      <img src="images/dabeli.jpg" alt="Dabeli">
+      <div class="tile-caption">&#127820; Dabeli</div>
+    </div>
+    <div class="tile">
+      <img src="images/pav_bhaji.jpg" alt="Pav Bhaji">
+      <div class="tile-caption">&#127853; Pav Bhaji</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="section menu-section" id="menu">
+  <div class="section-wrapper">
+    <div class="section-header">
+      <span class="section-label">Our Menu</span>
+      <h2 class="section-title">Tasty &amp; Hygienic Street Food</h2>
+      <p class="section-subtitle">Every dish is made fresh, with love and care &#8212; because your health matters.</p>
+    </div>
+
+    <!-- Filters -->
+    <div class="menu-filters">
+      <button class="menu-filter-btn active" data-filter="all">All</button>
+      <button class="menu-filter-btn" data-filter="Vada Pav">Vada Pav</button>
+      <button class="menu-filter-btn" data-filter="Dabeli">Dabeli</button>
+      <button class="menu-filter-btn" data-filter="Pav Bhaji">Pav Bhaji</button>
+      <button class="menu-filter-btn" data-filter="Combo">Combos</button>
+    </div>
+
+    <!-- Menu Grid -->
+    <div class="menu-grid">
+      <!-- Vada Pav: Classic -->
+      <div class="menu-card" data-category="Vada Pav">
+        <img src="images/vada_pav.jpg" alt="Classic Vada Pav">
+        <div class="menu-card-body">
+          <span class="category-tag">Vada Pav</span>
+          <h3>Classic Vada Pav</h3>
+          <p class="description">Potato filling in a crunchy bun, with chutney and peanuts &#8212; the ultimate comfort food.</p>
+          <div class="price-row"><span class="price"><span class="currency">&#8377;</span>40</span></div>
+        </div>
+      </div>
+
+      <!-- Vada Pav: Cheese -->
+      <div class="menu-card" data-category="Vada Pav">
+        <img src="images/vada_pav.jpg" alt="Cheese Vada Pav">
+        <div class="menu-card-body">
+          <span class="category-tag">Vada Pav</span>
+          <h3>Cheese Vada Pav</h3>
+          <p class="description">Classic Vada Pav loaded with melting cheese &#8212; extra cheesy, extra tasty.</p>
+          <div class="price-row"><span class="price"><span class="currency">&#8377;</span>70</span></div>
+        </div>
+      </div>
+
+      <!-- Vada Pav: Ula -->
+      <div class="menu-card" data-category="Vada Pav">
+        <img src="images/vada_pav.jpg" alt="Ula Vada Pav">
+        <div class="menu-card-body">
+          <span class="category-tag">Vada Pav</span>
+          <h3>Ula Vada Pav</h3>
+          <p class="description">The legendary twist &#8212; our signature recipe that flips the traditional blend.</p>
+          <div class="price-row"><span class="price"><span class="currency">&#8377;</span>60</span></div>
+        </div>
+      </div>
+
+      <!-- Vada Pav: Shezwan -->
+      <div class="menu-card" data-category="Vada Pav">
+        <img src="images/vada_pav.jpg" alt="Shezwan Vada Pav">
+        <div class="menu-card-body">
+          <span class="category-tag">Vada Pav</span>
+          <h3>Shezwan Vada Pav</h3>
+          <p class="description">Exotic spices with a hint of heat &#8212; the spicy kick you've been waiting for.</p>
+          <div class="price-row"><span class="price"><span class="currency">&#8377;</span>60</span></div>
+        </div>
+      </div>
+
+      <!-- Dabeli -->
+      <div class="menu-card" data-category="Dabeli">
+        <img src="images/dabeli.jpg" alt="Dabeli">
+        <div class="menu-card-body">
+          <span class="category-tag">Dabeli</span>
+          <h3>Dabeli</h3>
+          <p class="description">Spicy potato snack sprinkled with spices, served on a soft bun with a tangy kick.</p>
+          <div class="price-row"><span class="price"><span class="currency">&#8377;</span>40</span></div>
+        </div>
+      </div>
+
+      <!-- Pav Bhaji -->
+      <div class="menu-card" data-category="Pav Bhaji">
+        <img src="images/pav_bhaji.jpg" alt="Pav Bhaji">
+        <div class="menu-card-body">
+          <span class="category-tag">Pav Bhaji</span>
+          <h3>Pav Bhaji</h3>
+          <p class="description">Buttery, spiced vegetable mash served hot with buttery dinner rolls &#8212; a Mumbai classic.</p>
+          <div class="price-row"><span class="price"><span class="currency">&#8377;</span>80</span></div>
+        </div>
+      </div>
+
+      <!-- Combo -->
+      <div class="menu-card" data-category="Combo">
+        <img src="images/street_food.jpg" alt="Vada Pav + Dabeli Combo">
+        <div class="menu-card-body">
+          <span class="combo-badge">&#128293; Combo Offer</span>
+          <span class="category-tag">Combo</span>
+          <h3>Classic Vada Pav + Dabeli</h3>
+          <p class="description">Double the flavor! Our best-selling combo featuring two iconic street food classics.</p>
+          <div class="price-row">
+            <span class="price"><span class="currency">&#8377;</span>50</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT US ============ -->
+<section class="section" id="about">
+  <div class="section-wrapper">
+    <div class="section-header">
+      <span class="section-label">About Us</span>
+      <h2 class="section-title">Serving Fresh, Hygienic &amp; Tasty Street Food</h2>
+    </div>
+    <div class="about-grid">
+      <img src="images/street_food.jpg" alt="Hygenic Cart food">
+      <div class="about-content">
+        <p>Welcome to <strong>Hygenic Cart</strong> &#8212; where great taste meets complete cleanliness.</p>
+        <p>We are a street-food business built on three pillars: <strong>tasty food</strong>, <strong>strict cleanliness</strong>, and <strong>customer satisfaction</strong>. Every dish is prepared fresh, with ingredients sourced carefully and handled with the utmost hygiene, so you can eat with confidence and enjoy every bite.</p>
+        <p>Our menu is a celebration of Indian street food &#8212; from the beloved Vada Pav to the tangy Dabeli and the rich, buttery Pav Bhaji. We take pride in using only fresh, quality ingredients and following hygienic preparation practices at every step.</p>
+        <p class="about-quote">"Eat Fresh... Stay Healthy..."</p>
+        <div class="about-stats">
+          <div class="about-stat">
+            <div class="number">100%</div>
+            <div class="label">Fresh Daily</div>
+          </div>
+          <div class="about-stat">
+            <div class="number">100%</div>
+            <div class="label">Hygienic Prep</div>
+          </div>
+          <div class="about-stat">
+            <div class="number">100%</div>
+            <div class="label">Customer Focus</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOD GALLERY ============ -->
+<section class="section" id="gallery" style="background: var(--cream-light);">
+  <div class="section-wrapper">
+    <div class="section-header">
+      <span class="section-label">Food Gallery</span>
+      <h2 class="section-title">Our Delicious Dishes</h2>
+      <p class="section-subtitle">A peek into the flavors, smells, and colors of our kitchen.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item"><img src="images/vada_pav.jpg" alt="Vada Pav"></div>
+      <div class="gallery-item"><img src="images/dabeli.jpg" alt="Dabeli"></div>
+      <div class="gallery-item"><img src="images/pav_bhaji.jpg" alt="Pav Bhaji"></div>
+      <div class="gallery-item"><img src="images/street_food.jpg" alt="Assorted Street Food"></div>
+      <div class="gallery-item"><img src="images/dahi_vada.jpg" alt="Dahi Vada"></div>
+      <div class="gallery-item"><img src="images/food_tray.jpg" alt="Food Platter"></div>
+      <div class="gallery-item"><img src="images/vada_pav.jpg" alt="Classic Vada Pav"></div>
+      <div class="gallery-item"><img src="images/street_food.jpg" alt="Combo Offer"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="section" id="contact">
+  <div class="section-wrapper">
+    <div class="section-header">
+      <span class="section-label">Contact &amp; Location</span>
+      <h2 class="section-title">Get in Touch</h2>
+      <p class="section-subtitle">Have a question or ready to order? Reach out to us &#8212; we'd love to hear from you!</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <span class="label">&#128222; Phone</span>
+        <p>+91 98765 43210</p>
+        <span class="label">&#128231; WhatsApp</span>
+        <p>+91 98765 43210</p>
+        <span class="label">&#128205; Business Address</span>
+        <p>123, Street Food Street,<br>Local Market, Mumbai - 400001</p>
+        <span class="label">&#128338; Operating Hours</span>
+        <p>Mon - Sun: 11:00 AM - 11:00 PM</p>
+      </div>
+      <form class="contact-form">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea placeholder="Your Message..." rows="5" required></textarea>
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <h4>&#127810; Hygenic Cart</h4>
+      <p>Fresh, delicious, and hygienic Indian street food made with love and care.</p>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <p style="margin-bottom:8px;"><a href="#home" style="color:var(--gray);">Home</a></p>
+      <p style="margin-bottom:8px;"><a href="#menu" style="color:var(--gray);">Menu</a></p>
+      <p style="margin-bottom:8px;"><a href="#about" style="color:var(--gray);">About Us</a></p>
+      <p style="margin-bottom:8px;"><a href="#gallery" style="color:var(--gray);">Gallery</a></p>
+      <p style="margin-bottom:0;"><a href="#contact" style="color:var(--gray);">Contact</a></p>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <p style="margin-bottom:8px;"><a href="tel:+919876543210" style="color:var(--gray);">+91 98765 43210</a></p>
+      <p style="margin-bottom:8px;"><a href="tel:+919876543210" style="color:var(--gray);">+91 98765 43210</a></p>
+      <p style="margin-bottom:8px;">123, Street Food Street,<br>Local Market, Mumbai</p>
+      <p style="margin-bottom:0;"><a href="#contact" style="color:var(--gray);">Get Directions</a></p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Hygenic Cart. All rights reserved. | "Eat Fresh... Stay Healthy..."</p>
+  </div>
+</footer>
+
+<script>
+// Menu filter functionality
+const filterBtns = document.querySelectorAll('.menu-filter-btn');
+const menuCards = document.querySelectorAll('.menu-card');
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Update active button
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.dataset.filter;
+
+    menuCards.forEach(card => {
+      if (filter === 'all') {
+        card.style.display = 'flex';
+      } else {
+        if (card.dataset.category === filter) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
+'''
+
+with open('/c/Users/OM/Desktop/HygenicCart/index.html', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print(f"Written {len(content)} bytes")
